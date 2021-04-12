@@ -58,14 +58,17 @@
             <form method="post">
                 <div class="row">
                     <div class="col-lg-4 col-md-6">
-                        <input type="text" name="nome" id="nome" placeholder="Seu Nome" required>
+                        <input type="text" name="nome" id="nome" placeholder="Seu Nome">
                     </div>
                     <div class="col-lg-4 col-md-6">
-                        <input type="email" name="email" id="email" placeholder="Seu Email" requires>
+                        <input type="email" name="email" id="email" placeholder="Seu Email">
                     </div>
                     <div class="col-lg-12 text-center">
                         <textarea name="mensagem" id="mensagem" placeholder="Sua Mensagem"></textarea>
                         <button name="btn-enviar-email" id="btn-enviar-email" type="button" class="site-btn">ENVIAR MENSAGEM</button>
+                    </div>
+
+                    <div id="msgEnviada" class="col-md-12 text-center mt-3">
                     </div>
                 </div>
             </form>
@@ -77,6 +80,38 @@
     require_once("rodape.php");
 ?>
 
-</body>
-
-</html>
+<script type="text/javascript">
+    $('#btn-enviar-email').click(function(event){
+        event.preventDefault(); //Não permite que a página seja atualizada
+        $('#msgEnviada').removeClass('text-success');
+        $('#msgEnviada').removeClass('text-danger');
+        $('#msgEnviada').text('Enviando...');
+        $.ajax({
+            url: "enviar.php",
+            method: "post",
+            data: $('form').serialize(), //Desta forma o ajax já entende que seja o formulário ao qual o botão pertence
+            dataType: "text",
+            success: function(mensagem) {
+                if (mensagem === 'Enviado com sucesso!') {
+                    $('#msgEnviada').addClass('text-success');
+                    $('#msgEnviada').text(mensagem);
+                    $('#nome').val('');
+                    $('#email').val('');
+                    $('#mensagem').val('');
+                } else if (mensagem === 'Preencha o campo Nome') {
+                    //$('#nome').focus;
+                    $('#msgEnviada').text(mensagem);
+                } else if (mensagem === 'Preencha o campo Email') {
+                    //$('#nome').focus;
+                    $('#msgEnviada').text(mensagem);
+                } else if (mensagem === 'Preencha o campo Mensagem') {
+                    //$('#nome').focus;
+                    $('#msgEnviada').text(mensagem);
+                } else {
+                    $('#msgEnviada').addClass('text-danger');
+                    $('#msgEnviada').text('Erro ao enviar os dados!');
+                }
+            }
+        });
+    });
+</script>
