@@ -11,4 +11,15 @@ $texto_destaque = 'Inserir alguma informação pertinente';
 $endereco_loja = 'Inserir endereço da loja';
 $texto_cupom = 'Insira o seu código de cupom';
 
+//VARIÁVEIS DO BANCO DE DADOS
+$servidor = "localhost";
+$usuario = "root";
+$senha = "";
+$banco = "jalldb";
+$options = [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES => false
+];
+
 ?>
