@@ -15,12 +15,17 @@
         $_SESSION['nivel_usuario'] = $dados[0]['nivel'];
         
         if ($_SESSION['nivel_usuario'] == 'Admin') {
-            echo 'Administrador';
+            echo "<script language=javascript> 
+                    windows.location='painel_admin'
+                </script>";
         }
 
         if ($_SESSION['nivel_usuario'] == 'Cliente') {
-            echo 'Cliente';
+            echo "<script language=javascript> windows.location='painel_cliente' </script>";
         }
 
+    } else {
+        echo "<script language=javascript> windows.alert('Dados inseridos estão incorretos!') </script>";
+        echo "<script language=javascript> windows.location='index.php' </script>";
     }
 ?>
