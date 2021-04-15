@@ -1,5 +1,14 @@
 <?php
-require_once("../config.php");
+require_once("../conexao.php");
+
+//VERIFICA SE EXISTE ALGUM USUARIO, SE NÃO HOUVER CRIA O CADASTRO DO ADMINISTRADOR COM VALORES PADRÕES
+$result = $pdo->query("SELECT * FROM usuario");
+$dados = $result->fetchAll(PDO::FETCH_ASSOC);
+$senha_crip = md5('123');
+
+if (@count($dados) == 0) {
+    $result = $pdo->query("INSERT into usuario (nome, cpf, email, senha, senha_crip, nivel) values ('Administrador', '000.000.000-00', '$email', '123', '$senha_crip', 'Admin')");
+}
 ?>
 
 <!DOCTYPE html>
@@ -37,11 +46,11 @@ require_once("../config.php");
                         <form action="" method="post" name="login">
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Insira o seu email">
+                                <input type="email" name="email_login" id="email_login" class="form-control" aria-describedby="emailHelp" placeholder="Insira o seu email">
                             </div>
                             <div class="form-group">
                                 <label for="senha">Senha</label>
-                                <input type="password" name="senha" id="senha" class="form-control" aria-describedby="emailHelp" placeholder="Insira a sua senha">
+                                <input type="password" name="senha_login" id="senha_login" class="form-control" aria-describedby="emailHelp" placeholder="Insira a sua senha">
                             </div>
                             <div class="form-group">
                                 <p class="text-center">Ao se cadastrar você concorda com os nossos<br /> <a href="#">Termos de Uso</a></p>
@@ -97,16 +106,21 @@ require_once("../config.php");
                     </div>
                     <div class="form-group">
                         <label for="senha">Senha</label>
-                        <input type="password" class="form-control" name="senha" id="senha" placeholder="Insira a sua senha">
+                        <input type="password" class="form-control" name="senha-cad" id="senha-cad" placeholder="Insira a sua senha">
                     </div>
                     <div class="form-group">
                         <label for="conf-senha">Confirmar Senha</label>
                         <input type="password" class="form-control" name="conf-senha" id="conf-senha" placeholder="Insira novamente a sua senha">
                     </div>
             </div>
+
+            <small>
+                <div id="div-mensagem"></div>
+            </small>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">Cadastrar</button>
+                <button type="button" id="btn-fechar-cadastrar" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" id="btn-cadastrar" class="btn btn-primary">Cadastrar</button>
             </div>
             </form>
         </div>
@@ -127,17 +141,44 @@ require_once("../config.php");
                 <form method="post">
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Insira o seu email">
+                        <input type="email" class="form-control" name="email-rec" id="email-rec" placeholder="Insira o seu email">
                     </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">Recuperar</button>
+                <button type="button" id="btn-recuperar" class="btn btn-primary">Recuperar</button>
             </div>
             </form>
         </div>
     </div>
 </div>
+
+<!-- SCRIPTS PARA ENVIO DOS DADOS DA MODAL CADASTRO-->
+
+<script type="text/javascript">
+    $('#btn-cadastrar').click(function(event) {
+        event.preventDefault(); //Não permite que a página seja atualizada
+
+        $.ajax({
+            url: "cadastrar.php",
+            method: "post",
+            data: $('form').serialize(), //Desta forma o ajax já entende que seja o formulário ao qual o botão pertence
+            dataType: "text",
+            success: function(msg) {
+                if (msg.trim() === 'Cadastrado com Sucesso!') {
+                    //$('#div-mensagem').addClass('text-success')
+                    //$('#div-mensagem').text(msg);
+                    $('#btn-fechar-cadastrar').click();
+                    $('#email_login').val(document.getElementById('email').value);
+                } else {
+                    $('#div-mensagem').addClass('text-danger')
+                    //$('#div-mensagem').text('Deu erro ao enviar o formulário! Provavelmente seu servidor de hospedagem não está com permissão de envio habilitada ou você esta em um servidor local!');
+                    $('#div-mensagem').text(msg);
+                }
+            }
+        });
+    });
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script src="../js/mascara.js"></script>
