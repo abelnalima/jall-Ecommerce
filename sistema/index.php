@@ -43,7 +43,7 @@ if (@count($dados) == 0) {
                                 <h1>Login</h1>
                             </div>
                         </div>
-                        <form action="" method="post" name="login">
+                        <form action="autenticar.php" method="post" name="login">
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" name="email_login" id="email_login" class="form-control" aria-describedby="emailHelp" placeholder="Insira o seu email">
