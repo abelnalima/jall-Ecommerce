@@ -120,7 +120,7 @@ if (@count($dados) == 0) {
 
             <div class="modal-footer">
                 <button type="button" id="btn-fechar-cadastrar" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" id="btn-cadastrar" class="btn btn-primary">Cadastrar</button>
+                <button type="button" id="btn_cadastrar" class="btn btn-primary">Cadastrar</button>
             </div>
             </form>
         </div>
@@ -140,13 +140,18 @@ if (@count($dados) == 0) {
             <div class="modal-body">
                 <form method="post">
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email-rec" id="email-rec" placeholder="Insira o seu email">
+                        <label for="email-rec">Email</label>
+                        <input type="email" class="form-control" name="email_rec" id="email_rec" placeholder="Insira o seu email">
                     </div>
             </div>
+
+            <small>
+                <div id="div-mensagem-rec"></div>
+            </small>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" id="btn-recuperar" class="btn btn-primary">Recuperar</button>
+                <button type="button" id="btn_recuperar" class="btn btn-primary">Recuperar</button>
             </div>
             </form>
         </div>
@@ -154,9 +159,8 @@ if (@count($dados) == 0) {
 </div>
 
 <!-- SCRIPTS PARA ENVIO DOS DADOS DA MODAL CADASTRO-->
-
 <script type="text/javascript">
-    $('#btn-cadastrar').click(function(event) {
+    $('#btn_cadastrar').click(function(event) {
         event.preventDefault(); //Não permite que a página seja atualizada
 
         $.ajax({
@@ -174,6 +178,36 @@ if (@count($dados) == 0) {
                     $('#div-mensagem').addClass('text-danger')
                     //$('#div-mensagem').text('Deu erro ao enviar o formulário! Provavelmente seu servidor de hospedagem não está com permissão de envio habilitada ou você esta em um servidor local!');
                     $('#div-mensagem').text(msg);
+                }
+            }
+        });
+    });
+</script>
+
+<!-- SCRIPTS PARA ENVIO DOS DADOS DA MODAL RECUPERAR-->
+<script type="text/javascript">
+    $('#btn_recuperar').click(function(event) {
+        event.preventDefault(); //Não permite que a página seja atualizada
+
+        $.ajax({
+            url: "recuperar.php",
+            method: "post",
+            data: $('form').serialize(), //Desta forma o ajax já entende que seja o formulário ao qual o botão pertence
+            dataType: "text",
+            success: function(msg) {
+                if (msg.trim() === 'Senha enviada para o email!') {
+                    $('#div-mensagem-rec').addClass('text-success')
+                    $('#div-mensagem-rec').text(msg);
+                } else if (msg.trim() === 'Insira o seu email') {
+                    $('#div-mensagem-rec').addClass('text-success');
+                    $('#div-mensagem-rec').text(msg);
+                } else if (msg.trim() === 'Este email não esta cadastrado!') {
+                    $('#div-mensagem-rec').addClass('text-danger');
+                    $('#div-mensagem-rec').text(msg);
+                } else {
+                    $('#div-mensagem-rec').addClass('text-danger')
+                    $('#div-mensagem-rec').text('Deu erro ao enviar o formulário! Provavelmente seu servidor de hospedagem não está com permissão de envio habilitada ou você esta em um servidor local!');
+                    //$('#div-mensagem-rec').text(msg);
                 }
             }
         });
