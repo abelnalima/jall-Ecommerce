@@ -9,23 +9,23 @@
     $dados = $result->fetchAll(PDO::FETCH_ASSOC);
 
     if (@count($dados) > 0) {
+        $_SESSION['id_usuario'] = $dados[0]['id_usuario'];
         $_SESSION['nome_usuario'] = $dados[0]['nome'];  //session recebe o nome do primeiro usuario encontrado pela query
         $_SESSION['email_usuario'] = $dados[0]['email'];
         $_SESSION['cpf_usuario'] = $dados[0]['cpf'];
         $_SESSION['nivel_usuario'] = $dados[0]['nivel'];
         
         if ($_SESSION['nivel_usuario'] == 'Admin') {
-            echo "<script language=javascript> 
-                    windows.location='painel_admin'
-                </script>";
+            echo "<script language='javascript'> window.location='painel-admin' </script>";
+            //echo 'Pegou carai';
         }
 
         if ($_SESSION['nivel_usuario'] == 'Cliente') {
-            echo "<script language=javascript> windows.location='painel_cliente' </script>";
+            echo "<script language='javascript'> window.location='painel-cliente' </script>";
         }
 
     } else {
-        echo "<script language=javascript> windows.alert('Dados inseridos estão incorretos!') </script>";
-        echo "<script language=javascript> windows.location='index.php' </script>";
+        echo "<script language='javascript'> window.alert('Dados inseridos estão incorretos!') </script>";
+        echo "<script language='javascript'> window.location='index.php' </script>";
     }
 ?>
