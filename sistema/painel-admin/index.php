@@ -1,22 +1,31 @@
 <?php
 
-    @session_start();
+require_once("../../conexao.php");
 
-    //VERIFICANDO SE O USUÁRIO ESTA AUTENTICADO
-    if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') {
-        echo "<script language='javascript'> window.location='../index.php' </script>";
-    }
+@session_start();
 
-    //VARIÁVEIS DO MENU DO PAINEL
-    $pag = @$_GET["pag"];
-    $menu1 = "corretores";
-    $menu2 = "tesoureiros";
-    $menu3 = "cidade";
-    $menu4 = "bairro";
-    $menu5 = "tipo";
-    $menu6 = "tarefas";
-    $menu7 = "vendas";
-    $menu8 = "alugueis";
+//VERIFICANDO SE O USUÁRIO ESTA AUTENTICADO
+if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') {
+    echo "<script language='javascript'> window.location='../index.php' </script>";
+}
+
+//VARIÁVEIS DO MENU DO PAINEL
+$pag = @$_GET["pag"];
+$menu1 = "produtos";
+$menu2 = "categorias";
+$menu3 = "sub-categorias";
+$menu4 = "combos";
+$menu5 = "promocoes";
+$menu6 = "clientes";
+$menu7 = "vendas";
+$menu8 = "outro";
+
+//CONSULTAR OS DADOS DO USUÁRIO ATRAVÉS DO BANCO DE DADOS
+$result = $pdo->query("SELECT * FROM usuario where id_usuario = '$_SESSION[id_usuario]'");
+$dados = $result->fetchAll(PDO::FETCH_ASSOC);
+$nome_user = @$dados[0]['nome'];
+$cpf_user = @$dados[0]['cpf'];
+$email_user = @$dados[0]['email'];
 
 ?>
 
@@ -47,7 +56,7 @@
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <link rel="shortcut icon" href="../../img/favicon0.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../img/favicone.ico" type="image/x-icon">
     <link rel="icon" href="../../img/favicon0.ico" type="image/x-icon">
 
 </head>
@@ -76,13 +85,13 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-users"></i> <span>Pessoas</span>
+                    <i class="fas fa-box-open"></i> <span>Produtos</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">PESSOAS:</h6>
-                        <a class="collapse-item" href="index.php?pag=<?php echo $menu1 ?>">Corretores</a>
-                        <a class="collapse-item" href="index.php?pag=<?php echo $menu2 ?>">Tesoureiros</a>
+                        <a class="collapse-item" href="index.php?pag=<?php echo $menu1 ?>">Produtos</a>
+                        <a class="collapse-item" href="index.php?pag=<?php echo $menu2 ?>">Categorias</a>
+                        <a class="collapse-item" href="index.php?pag=<?php echo $menu3 ?>">Sub-Categorias</a>
                     </div>
                 </div>
             </li>
@@ -90,16 +99,13 @@
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-home"></i>
-                    <span>Opções Imóveis</span>
+                    <i class="fas fa-percent"></i>
+                    <span>Combos e Promoções</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Dados Imóveis:</h6>
-                        <a class="collapse-item" href="index.php?pag=<?php echo $menu3 ?>">Cidade</a>
-                        <a class="collapse-item" href="index.php?pag=<?php echo $menu4 ?>">Bairro</a>
-                        <a class="collapse-item" href="index.php?pag=<?php echo $menu5 ?>">Tipo</a>
-
+                        <a class="collapse-item" href="index.php?pag=<?php echo $menu4 ?>">Combos</a>
+                        <a class="collapse-item" href="index.php?pag=<?php echo $menu5 ?>">Promoções</a>
                     </div>
                 </div>
             </li>
@@ -116,20 +122,20 @@
             <li class="nav-item">
                 <a class="nav-link" href="index.php?pag=<?php echo $menu6 ?>">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Agenda Corretores</span></a>
+                    <span>Clientes</span></a>
             </li>
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" href="index.php?pag=<?php echo $menu7 ?>">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Imóveis Vendidos</span></a>
+                    <span>Vendas</span></a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="index.php?pag=<?php echo $menu8 ?>">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Imóveis Alugados</span></a>
+                    <span>Outro</span></a>
             </li>
 
             <!-- Divider -->
@@ -163,7 +169,9 @@
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"> <? echo @$_SESSION?> </span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600">
+                                    <?php echo $nome_user ?>
+                                </span>
                                 <img class="img-profile rounded-circle" src="../../img/profiles/sem-foto.jpg">
 
                             </a>
@@ -232,7 +240,7 @@
 
     <!--  Modal Perfil-->
     <div class="modal fade" id="ModalPerfil" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Editar Perfil</h5>
@@ -243,52 +251,43 @@
 
                 <form id="form-perfil" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <input value="<?php echo $nome_user ?>" type="text" class="form-control" id="nome_admin" name="nome_admin" placeholder="Nome">
+                        </div>
+
+                        <div class="form-group">
+                            <label>CPF</label>
+                            <input value="<?php echo $cpf_user ?>" type="text" class="form-control" id="cpf_admin" name="cpf_admin" placeholder="CPF">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input value="<?php echo $email_user ?>" type="email" class="form-control" id="email_admin" name="email_admin" placeholder="Email">
+                        </div>
 
                         <div class="row">
-                            <div class="col-md-6 col-sm-12">
-                                <div class="form-group">
-                                    <label>Nome</label>
-                                    <input value="<?php echo $nome ?>" type="text" class="form-control" id="nome" name="nome" placeholder="Nome">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>CPF</label>
-                                    <input value="<?php echo $cpf ?>" type="text" class="form-control" id="cpf" name="cpf" placeholder="CPF">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input value="<?php echo $email ?>" type="email" class="form-control" id="email" name="email" placeholder="Email">
-                                </div>
-
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Senha</label>
-                                    <input value="" type="password" class="form-control" id="text" name="senha" placeholder="Senha">
+                                    <input value="" type="password" class="form-control" id="senha_admin" name="senha_admin" placeholder="Senha">
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="col-md-12 form-group">
-                                    <label>Foto</label>
-                                    <input value="<?php echo $img ?>" type="file" class="form-control-file" id="imagem" name="imagem" onchange="carregarImg();">
-
-                                </div>
-                                <div class="col-md-12 mb-2">
-                                    <img src="../img/profiles/<?php echo $img ?>" alt="Carregue sua Imagem" id="target" width="100%">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Confirmar Senha</label>
+                                    <input value="" type="password" class="form-control" id="conf_senha_admin" name="conf_senha_admin" placeholder="Senha">
                                 </div>
                             </div>
                         </div>
 
-                        <small>
-                            <div id="mensagem" class="mr-4">
-
-                            </div>
-                        </small>
-
+                        <small> <div id="mensagem-perfil" class="mr-4"></div> </small>
                     </div>
+
                     <div class="modal-footer">
 
-                        <input value="<?php echo $idUsuario ?>" type="hidden" name="txtid" id="txtid">
-                        <input value="<?php echo $cpf ?>" type="hidden" name="antigo" id="antigo">
+                        <input value="<?php echo $_SESSION['id_usuario'] ?>" type="hidden" name="txtid" id="txtid">
+                        <input value="<?php echo $_SESSION['cpf_usuario'] ?>" type="hidden" name="antigo" id="antigo">
 
                         <button type="button" id="btn-fechar" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                         <button type="submit" name="btn-salvar-perfil" id="btn-salvar-perfil" class="btn btn-primary">Salvar</button>
@@ -323,3 +322,26 @@
 </body>
 
 </html>
+
+<script type="text/javascript">
+    $('#btn-salvar-perfil').click(function(event) {
+        event.preventDefault(); //Não permite que a página seja atualizada
+
+        $.ajax({
+            url: "editar-perfil.php",
+            method: "post",
+            data: $('form').serialize(), //Desta forma o ajax já entende que seja o formulário ao qual o botão pertence
+            dataType: "text",
+            success: function(msg) {
+                if (msg.trim() === 'Salvo com Sucesso!') {
+                    $('#btn-fechar-perfil').click();
+                    window.location='index.php';
+                } else {
+                    $('#mensagem-perfil').addClass('text-danger')
+                    //$('#div-mensagem').text('Deu erro ao enviar o formulário! Provavelmente seu servidor de hospedagem não está com permissão de envio habilitada ou você esta em um servidor local!');
+                    $('#mensagem-perfil').text(msg);
+                }
+            }
+        });
+    });
+</script>
