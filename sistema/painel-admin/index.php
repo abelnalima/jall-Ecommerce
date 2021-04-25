@@ -57,7 +57,7 @@ $email_user = @$dados[0]['email'];
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <link rel="shortcut icon" href="../../img/favicone.ico" type="image/x-icon">
-    <link rel="icon" href="../../img/favicon0.ico" type="image/x-icon">
+    <link rel="icon" href="../../img/favicone.ico" type="image/x-icon">
 
 </head>
 
