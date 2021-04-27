@@ -44,12 +44,17 @@ if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') 
                         $categoria = $res[$i]['id_categoria'];
                         $imagem = $res[$i]['imagem'];
                         $id = $res[$i]['id_sub_cat'];
+
+                        //RECUPERANDO O NOME DAS CATEGORIAS ATRAVÉS DO ID
+                        $query = $pdo->query("SELECT * FROM categorias WHERE id_categorias = '$categoria'");
+                        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                        $nomeCategoria = $result[0]['nome'];
                     ?>
 
                         <tr>
                             <td><?php echo $nome ?></td>
                             <td><?php echo $itens ?></td>
-                            <td><?php echo $categoria ?></td>
+                            <td><?php echo $nomeCategoria ?></td>
                             <td><img src="../../img/subcategorias/<?php echo $imagem ?>" width="50"></td>
                             <td>
                                 <a href="index.php?pag=<?php echo $pag ?>&funcao=editar&id=<?php echo $id ?>" class='text-primary mr-1' title='Editar Dados'><i class='far fa-edit'></i></a>
@@ -99,6 +104,27 @@ if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') 
                     <div class="form-group">
                         <label>Categoria</label>
                         <select name="categoria" id="categoria" class="form-control form-control-sm">
+                            <?php
+                            if (@$_GET['funcao'] == 'editar') {
+                                $query = $pdo->query("SELECT * FROM categorias WHERE id_categorias = '$categoria2'");
+                                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                                $nomeCat = $result[0]['nome'];
+
+                                echo "<option value='" . $categoria2 . "'>" . $nomeCat . "</option>";
+                            }
+
+                            $query2 = $pdo->query("SELECT * FROM categorias order by nome asc");
+                            $result2 = $query2->fetchAll(PDO::FETCH_ASSOC);
+
+                            for ($i = 0; $i < count($result2); $i++) {
+                                foreach ($result2[$i] as $key => $value) {
+                                }
+
+                                if (@$nomeCat != $result2[$i]['nome']) {
+                                    echo "<option value='" . $result2[$i]['id_categorias'] . "'>" . $result2[$i]['nome'] . "</option>";
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
 
@@ -108,9 +134,9 @@ if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') 
                     </div>
 
                     <?php if (@$imagem2 != "") { ?>
-                        <img src="../../img/categorias/<?php echo $imagem2 ?>" width="200" height="200" id="target">
+                        <img src="../../img/subcategorias/<?php echo $imagem2 ?>" width="200" height="200" id="target">
                     <?php  } else { ?>
-                        <img src="../../img/categorias/sem-foto.jpg" width="200" height="200" id="target">
+                        <img src="../../img/subcategorias/sem-foto.jpg" width="200" height="200" id="target">
                     <?php } ?>
 
                     <small>
@@ -145,7 +171,6 @@ if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') 
                 <div id="mensagem_excluir" text-align="center" class=""></div>
             </div>
 
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-cancelar-excluir">Cancelar</button>
                 <form method="post">
@@ -159,7 +184,6 @@ if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') 
 
 <!-- VERIFICAÇÃO DE QUAL FUNÇÃO ESTÁ SENDO CHAMADA -->
 <?php
-
 if (@$_GET["funcao"] != null && @$_GET["funcao"] == "novo") {
     echo "<script>$('#modalDados').modal('show');</script>";
 }
@@ -217,9 +241,9 @@ if (@$_GET["funcao"] != null && @$_GET["funcao"] == "excluir") {
 
 <!-- AJAX PARA EXCLUIR UMA CATEGORIA -->
 <script type="text/javascript">
-    $(document).ready(function () {
-        var pag = "<?=$pag?>";
-        $('#btn-deletar').click(function (event) {
+    $(document).ready(function() {
+        var pag = "<?= $pag ?>";
+        $('#btn-deletar').click(function(event) {
             event.preventDefault();
 
             $.ajax({
@@ -228,7 +252,7 @@ if (@$_GET["funcao"] != null && @$_GET["funcao"] == "excluir") {
                 data: $('form').serialize(),
                 dataType: "text",
 
-                success: function (mensagem) {
+                success: function(mensagem) {
                     if (mensagem.trim() == "Excluído com Sucesso!") {
                         $('#btn-cancelar-excluir').click();
                         window.location = "index.php?pag=" + pag;
@@ -268,7 +292,3 @@ if (@$_GET["funcao"] != null && @$_GET["funcao"] == "excluir") {
         })
     });
 </script>
-
-<!-- SCRIPTS DIVERSOS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
-<script src="../../js/mascara.js"></script>
