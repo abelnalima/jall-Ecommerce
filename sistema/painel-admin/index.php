@@ -13,7 +13,7 @@ if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') 
 $pag = @$_GET["pag"];
 $menu1 = "produtos";
 $menu2 = "categorias";
-$menu3 = "sub-categorias";
+$menu3 = "subcategorias";
 $menu4 = "combos";
 $menu5 = "promocoes";
 $menu6 = "clientes";
