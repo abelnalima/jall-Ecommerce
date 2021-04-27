@@ -39,7 +39,6 @@ if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') 
                         }
 
                         $nome = $res[$i]['nome'];
-                        $itens = $res[$i]['itens'];
                         $imagem = $res[$i]['imagem'];
                         $id = $res[$i]['id_categorias'];
                     ?>

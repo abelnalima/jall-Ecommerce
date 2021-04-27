@@ -40,15 +40,14 @@ if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') 
                         }
 
                         $nome = $res[$i]['nome'];
-                        $itens = $res[$i]['item'];
                         $categoria = $res[$i]['id_categoria'];
                         $imagem = $res[$i]['imagem'];
                         $id = $res[$i]['id_sub_cat'];
 
                         //RECUPERANDO O NOME DAS CATEGORIAS ATRAVÉS DO ID
-                        $query = $pdo->query("SELECT * FROM categorias WHERE id_categorias = '$categoria'");
-                        $result = $query->fetchAll(PDO::FETCH_ASSOC);
-                        $nomeCategoria = $result[0]['nome'];
+                        $query2 = $pdo->query("SELECT * FROM categorias WHERE id_categorias = '$categoria'");
+                        $result2 = $query2->fetchAll(PDO::FETCH_ASSOC);
+                        $nomeCategoria = $result2[0]['nome'];
                     ?>
 
                         <tr>
