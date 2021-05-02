@@ -48,6 +48,11 @@ if (@$_SESSION['id_usuario'] == null || @$_SESSION['nivel_usuario'] != 'Admin') 
                         $query2 = $pdo->query("SELECT * FROM categorias WHERE id_categorias = '$categoria'");
                         $result2 = $query2->fetchAll(PDO::FETCH_ASSOC);
                         $nomeCategoria = $result2[0]['nome'];
+
+                        //RECUPERANDO A QUANTIDADE DE PRODUTOS RELACIONADOS A SUBCATEGORIA
+                        $query3 = $pdo->query("SELECT * FROM produtos WHERE id_sub_cat = '$id'");
+                        $result3 = $query3->fetchAll(PDO::FETCH_ASSOC);
+                        $itens = @count($result3);
                     ?>
 
                         <tr>

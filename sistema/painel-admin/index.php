@@ -19,6 +19,7 @@ $menu5 = "promocoes";
 $menu6 = "clientes";
 $menu7 = "vendas";
 $menu8 = "outro";
+$menu9 = "tipo-envios";
 
 //CONSULTAR OS DADOS DO USUÁRIO ATRAVÉS DO BANCO DE DADOS
 $result = $pdo->query("SELECT * FROM usuario where id_usuario = '$_SESSION[id_usuario]'");
@@ -92,6 +93,7 @@ $email_user = @$dados[0]['email'];
                         <a class="collapse-item" href="index.php?pag=<?php echo $menu1 ?>">Produtos</a>
                         <a class="collapse-item" href="index.php?pag=<?php echo $menu2 ?>">Categorias</a>
                         <a class="collapse-item" href="index.php?pag=<?php echo $menu3 ?>">Sub-Categorias</a>
+                        <a class="collapse-item" href="index.php?pag=<?php echo $menu9 ?>">Tipo Envios</a>
                     </div>
                 </div>
             </li>
@@ -216,6 +218,8 @@ $email_user = @$dados[0]['email'];
                         include_once($menu7 . ".php");
                     } else if ($pag == $menu8) {
                         include_once($menu8 . ".php");
+                    } else if ($pag == $menu9) {
+                        include_once($menu9 . ".php");
                     } else {
                         include_once("home.php");
                     }
