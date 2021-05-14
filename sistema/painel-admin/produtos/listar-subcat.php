@@ -13,7 +13,7 @@ for ($i = 0; $i < count($dados); $i++) {
     foreach ($dados[$i] as $key => $value) {
     }
 
-    echo "<option value='" . $dados[$i]['id_categoria'] . "'>" . $dados[$i]['nome'] . "</option>";
+    echo "<option value='" . $dados[$i]['id_sub_cat'] . "'>" . $dados[$i]['nome'] . "</option>";
 }
 
 echo "</select>";
